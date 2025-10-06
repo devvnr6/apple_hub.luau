@@ -73,6 +73,17 @@ local Typography = {
     }
 }
 
+-- Attribute compatibility shim: some executors may not allow :SetAttribute / :GetAttribute
+-- We'll maintain our own weak maps for semantic roles (text) and layers (background surfaces).
+local roleMap = setmetatable({}, {__mode = "k"}) -- instance -> role string
+local layerMap = setmetatable({}, {__mode = "k"}) -- instance -> layer string
+local function markRole(inst, role)
+    if inst then roleMap[inst] = role end
+end
+local function markLayer(inst, layer)
+    if inst then layerMap[inst] = layer end
+end
+
 -- Simple preference persistence (executor-friendly): will use writefile if available, else getgenv.
 local Prefs = {
     fileName = "apple_hub_prefs.json",
@@ -518,7 +529,7 @@ function Hub.setScale(scale)
             for _, inst in ipairs(Hub._instances.gui:GetDescendants()) do
                 if inst:IsA("TextLabel") or inst:IsA("TextButton") then
                     -- naive approach: detect by Role or fallback body size
-                    local role = inst:GetAttribute("Role")
+                    local role = roleMap[inst]
                     local size = Typography.sizes.body
                     if role == "Title" then size = Typography.sizes.title
                     elseif role == "Secondary" then size = Typography.sizes.body
@@ -543,22 +554,24 @@ local function applyTheme(root, theme)
     for _, inst in ipairs(root:GetDescendants()) do
         if inst:IsA("TextLabel") or inst:IsA("TextButton") then
             if inst.Name ~= "Shadow" then
-                if inst:GetAttribute("Role") == "Title" then
+                local role = roleMap[inst]
+                if role == "Title" then
                     inst.TextColor3 = theme.textPrimary
-                elseif inst:GetAttribute("Role") == "Secondary" then
+                elseif role == "Secondary" then
                     inst.TextColor3 = theme.textSecondary
-                elseif inst:GetAttribute("Role") == "Accent" then
+                elseif role == "Accent" then
                     inst.TextColor3 = theme.accent
                 else
                     inst.TextColor3 = inst.TextColor3 or theme.textPrimary
                 end
             end
         elseif inst:IsA("Frame") or inst:IsA("ScrollingFrame") then
-            if inst:GetAttribute("Layer") == "Base" then
+            local layer = layerMap[inst]
+            if layer == "Base" then
                 inst.BackgroundColor3 = theme.backgroundPrimary
-            elseif inst:GetAttribute("Layer") == "Elevated" then
+            elseif layer == "Elevated" then
                 inst.BackgroundColor3 = theme.backgroundElevated
-            elseif inst:GetAttribute("Layer") == "Secondary" then
+            elseif layer == "Secondary" then
                 inst.BackgroundColor3 = theme.backgroundSecondary
             end
         elseif inst:IsA("UIStroke") then
@@ -597,7 +610,8 @@ function Hub.mount(parent)
     root.Name = "Root"
     root.Size = UDim2.fromScale(1,1)
     root.BackgroundColor3 = Themes.light.backgroundPrimary
-    root:SetAttribute("Layer", "Base")
+    -- mark layer (no SetAttribute for executor compatibility)
+    markLayer(root, "Base")
     root.Parent = ui
 
     -- Scrollable content area
@@ -634,7 +648,7 @@ function Hub.mount(parent)
     scriptsHeader.BackgroundTransparency = 1
     scriptsHeader.TextXAlignment = Enum.TextXAlignment.Left
     scriptsHeader.Text = "Scripts"
-    scriptsHeader:SetAttribute("Role", "Title")
+    markRole(scriptsHeader, "Title")
     applyFont(scriptsHeader, Typography.sizes.title, "bold")
     scriptsHeader.Parent = scriptsPanel
     local scriptsNote = Instance.new("TextLabel")
@@ -660,7 +674,7 @@ function Hub.mount(parent)
     settingsHeader.BackgroundTransparency = 1
     settingsHeader.TextXAlignment = Enum.TextXAlignment.Left
     settingsHeader.Text = "Settings"
-    settingsHeader:SetAttribute("Role", "Title")
+    markRole(settingsHeader, "Title")
     applyFont(settingsHeader, Typography.sizes.title, "bold")
     settingsHeader.Parent = settingsPanel
 
@@ -705,7 +719,7 @@ function Hub.mount(parent)
     header.BackgroundTransparency = 1
     header.TextXAlignment = Enum.TextXAlignment.Left
     header.Text = "Apple Themed Hub"
-    header:SetAttribute("Role", "Title")
+    markRole(header, "Title")
     applyFont(header, Typography.sizes.title, "bold")
     header.Parent = content
 
@@ -713,7 +727,7 @@ function Hub.mount(parent)
     subtitle.BackgroundTransparency = 1
     subtitle.TextXAlignment = Enum.TextXAlignment.Left
     subtitle.Text = "A minimal, modular interface." 
-    subtitle.SetAttribute("Role", "Secondary")
+    markRole(subtitle, "Secondary")
     applyFont(subtitle, Typography.sizes.body)
     subtitle.Parent = content
 
