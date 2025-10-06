@@ -324,7 +324,7 @@ function Components.Card(theme, props)
     return f
 end
 
-function Components.NavBar(theme, items)
+function Components.NavBar(theme, items, onSelect)
     local bar = Instance.new("Frame")
     bar.Name = "NavBar"
     bar.Size = UDim2.new(1,0,0,60)
@@ -356,8 +356,8 @@ function Components.NavBar(theme, items)
         b.MouseButton1Click:Connect(function()
             selectedName = item.Name
             highlight(b)
-            if bar.Parent and bar.Parent.Parent and bar.Parent.Parent.Parent then
-                -- callback placeholder
+            if onSelect then
+                pcall(onSelect, selectedName)
             end
         end)
         if i == 1 then
@@ -365,12 +365,14 @@ function Components.NavBar(theme, items)
             highlight(b)
         end
     end
-    bar:SetAttribute("_buttons", buttons)
-    bar:SetAttribute("_selected", selectedName)
+    -- Store references directly (Attributes cannot hold tables)
+    bar._buttons = buttons
+    bar._selected = selectedName
     function bar.Select(name)
         local b = buttons[name]
         if b then
             selectedName = name
+            bar._selected = name
             highlight(b)
         end
     end
@@ -473,6 +475,23 @@ Hub._themeListeners = {}
 Hub._reducedMotion = Prefs.data.reducedMotion or false
 Hub._visible = true
 Hub._cards = {}
+Hub._navListeners = {}
+
+function Hub.onNavigate(cb)
+    if type(cb) == "function" then table.insert(Hub._navListeners, cb) end
+end
+
+function Hub._navigate(name)
+    -- Fire callbacks
+    for _, cb in ipairs(Hub._navListeners) do pcall(cb, name) end
+    -- Panel switching
+    local panels = Hub._instances.panels
+    if panels then
+        for panelName, frame in pairs(panels) do
+            frame.Visible = (panelName == name)
+        end
+    end
+end
 
 function Hub.onThemeChanged(cb)
     if type(cb) == "function" then
@@ -579,16 +598,103 @@ function Hub.mount(parent)
     root.Parent = ui
 
     -- Scrollable content area
+    -- Panel container
+    local panelContainer = Instance.new("Frame")
+    panelContainer.Name = "Panels"
+    panelContainer.BackgroundTransparency = 1
+    panelContainer.Size = UDim2.new(1,0,1,-80)
+    panelContainer.Parent = root
+
+    -- HOME panel (existing content becomes Home)
     local content = Instance.new("ScrollingFrame")
-    content.Name = "Content"
+    content.Name = "Home"
     content.BackgroundTransparency = 1
-    content.Size = UDim2.new(1,0,1,-80)
+    content.Size = UDim2.fromScale(1,1)
     content.CanvasSize = UDim2.new(0,0,0,0)
     content.ScrollBarThickness = 4
     content.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
-    content.Parent = root
+    content.Parent = panelContainer
     list(content, Enum.FillDirection.Vertical, 16)
     padding(content, 24)
+
+    -- SCRIPTS panel
+    local scriptsPanel = Instance.new("ScrollingFrame")
+    scriptsPanel.Name = "Scripts"
+    scriptsPanel.BackgroundTransparency = 1
+    scriptsPanel.Size = UDim2.fromScale(1,1)
+    scriptsPanel.ScrollBarThickness = 4
+    scriptsPanel.Visible = false
+    scriptsPanel.Parent = panelContainer
+    list(scriptsPanel, Enum.FillDirection.Vertical, 12)
+    padding(scriptsPanel, 24)
+    local scriptsHeader = Instance.new("TextLabel")
+    scriptsHeader.BackgroundTransparency = 1
+    scriptsHeader.TextXAlignment = Enum.TextXAlignment.Left
+    scriptsHeader.Text = "Scripts"
+    scriptsHeader:SetAttribute("Role", "Title")
+    applyFont(scriptsHeader, Typography.sizes.title, "bold")
+    scriptsHeader.Parent = scriptsPanel
+    local scriptsNote = Instance.new("TextLabel")
+    scriptsNote.BackgroundTransparency = 1
+    scriptsNote.TextXAlignment = Enum.TextXAlignment.Left
+    scriptsNote.TextWrapped = true
+    scriptsNote.Text = "Add your script cards programmatically via Hub.addCard() or a future loader."
+    scriptsNote.TextColor3 = Themes.light.textSecondary
+    applyFont(scriptsNote, Typography.sizes.body)
+    scriptsNote.Parent = scriptsPanel
+
+    -- SETTINGS panel
+    local settingsPanel = Instance.new("ScrollingFrame")
+    settingsPanel.Name = "Settings"
+    settingsPanel.BackgroundTransparency = 1
+    settingsPanel.Size = UDim2.fromScale(1,1)
+    settingsPanel.ScrollBarThickness = 4
+    settingsPanel.Visible = false
+    settingsPanel.Parent = panelContainer
+    list(settingsPanel, Enum.FillDirection.Vertical, 14)
+    padding(settingsPanel, 24)
+    local settingsHeader = Instance.new("TextLabel")
+    settingsHeader.BackgroundTransparency = 1
+    settingsHeader.TextXAlignment = Enum.TextXAlignment.Left
+    settingsHeader.Text = "Settings"
+    settingsHeader:SetAttribute("Role", "Title")
+    applyFont(settingsHeader, Typography.sizes.title, "bold")
+    settingsHeader.Parent = settingsPanel
+
+    local scaleLabel = Instance.new("TextLabel")
+    scaleLabel.BackgroundTransparency = 1
+    scaleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    scaleLabel.Text = "Scale: " .. tostring(Typography.scale)
+    applyFont(scaleLabel, Typography.sizes.body)
+    scaleLabel.Parent = settingsPanel
+
+    local scaleUp = Components.Button(Themes.light, {Text = "+"})
+    scaleUp.Size = UDim2.new(0,50,0,40)
+    scaleUp.Parent = settingsPanel
+    scaleUp.MouseButton1Click:Connect(function()
+        Hub.setScale(math.min(Typography.scale + 0.05, 2))
+        scaleLabel.Text = "Scale: " .. string.format("%.2f", Typography.scale)
+    end)
+    local scaleDown = Components.Button(Themes.light, {Text = "-", Transparent = true})
+    scaleDown.Size = UDim2.new(0,50,0,40)
+    scaleDown.Parent = settingsPanel
+    scaleDown.MouseButton1Click:Connect(function()
+        Hub.setScale(math.max(Typography.scale - 0.05, 0.5))
+        scaleLabel.Text = "Scale: " .. string.format("%.2f", Typography.scale)
+    end)
+
+    local motionToggle = Components.Button(Themes.light, {Text = Hub._reducedMotion and "Enable Motion" or "Reduce Motion", Transparent = true})
+    motionToggle.Parent = settingsPanel
+    motionToggle.MouseButton1Click:Connect(function()
+        Hub.setReducedMotion(not Hub._reducedMotion)
+        motionToggle.Text = Hub._reducedMotion and "Enable Motion" or "Reduce Motion"
+    end)
+
+    Hub._instances.panels = {
+        Home = content,
+        Scripts = scriptsPanel,
+        Settings = settingsPanel,
+    }
 
     -- Section: Hero / Title
     local header = Instance.new("TextLabel")
@@ -664,10 +770,19 @@ function Hub.mount(parent)
         {Name = "Home"},
         {Name = "Scripts"},
         {Name = "Settings"},
-    })
+    }, function(name)
+        Hub._navigate(name)
+    end)
     nav.AnchorPoint = Vector2.new(0.5,1)
     nav.Position = UDim2.new(0.5,0,1,-10)
     nav.Parent = root
+    Hub._instances.nav = nav
+
+    function Hub.selectNav(name)
+        if Hub._instances.nav and Hub._instances.nav.Select then
+            Hub._instances.nav:Select(name)
+        end
+    end
 
     -- Responsive adjust (simple)
     local function adjust()
@@ -710,8 +825,14 @@ function Hub.mount(parent)
     -- Card addition API
     function Hub.addCard(info)
         if not info or type(info) ~= "table" then return end
+        -- Default to Home panel for now
+        local targetParent = gridHolder
+        if info.Panel and Hub._instances.panels[info.Panel] then
+            -- attach to panel root if no grid there
+            targetParent = Hub._instances.panels[info.Panel]
+        end
         local c = Components.Card(Themes[Hub._mode], {Title = info.Title, Description = info.Description})
-        c.Parent = gridHolder
+        c.Parent = targetParent
         table.insert(Hub._cards, c)
         return c
     end
@@ -735,6 +856,7 @@ function Hub.unmount()
     Hub._mounted = false
     Hub._themeListeners = {}
     Hub._cards = {}
+    Hub._navListeners = {}
 end
 
 return Hub
