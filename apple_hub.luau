@@ -713,7 +713,7 @@ function Hub.mount(parent)
     subtitle.BackgroundTransparency = 1
     subtitle.TextXAlignment = Enum.TextXAlignment.Left
     subtitle.Text = "A minimal, modular interface." 
-    subtitle:SetAttribute("Role", "Secondary")
+    subtitle.SetAttribute("Role", "Secondary")
     applyFont(subtitle, Typography.sizes.body)
     subtitle.Parent = content
 
