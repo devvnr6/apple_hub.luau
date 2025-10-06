@@ -365,16 +365,19 @@ function Components.NavBar(theme, items, onSelect)
             highlight(b)
         end
     end
-    -- Store references directly (Attributes cannot hold tables)
-    bar._buttons = buttons
-    bar._selected = selectedName
-    function bar.Select(name)
+    -- Private state (no attachment to attributes or instance fields to avoid errors)
+    local function selectInternal(name)
         local b = buttons[name]
         if b then
             selectedName = name
-            bar._selected = name
             highlight(b)
         end
+    end
+    function bar.Select(name)
+        selectInternal(name)
+    end
+    function bar.GetSelected()
+        return selectedName
     end
     return bar
 end
