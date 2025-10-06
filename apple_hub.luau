@@ -351,12 +351,14 @@ function Components.NavBar(theme, items, onSelect)
     local selectedName = nil
     local buttons = {}
     local function highlight(target)
-        for name, b in pairs(buttons) do
+        for _, b in pairs(buttons) do
             tween(b, {BackgroundColor3 = theme.backgroundSecondary}, 0.15)
             b.TextColor3 = theme.textPrimary
         end
-        tween(target, {BackgroundColor3 = theme.accent}, 0.2)
-        target.TextColor3 = Color3.new(1,1,1)
+        if target then
+            tween(target, {BackgroundColor3 = theme.accent}, 0.2)
+            target.TextColor3 = Color3.new(1,1,1)
+        end
     end
     for i, item in ipairs(items) do
         local b = Components.Button(theme, {Text = item.Name, Transparent = true})
@@ -365,6 +367,7 @@ function Components.NavBar(theme, items, onSelect)
         b.Parent = bar
         buttons[item.Name] = b
         b.MouseButton1Click:Connect(function()
+            if selectedName == item.Name then return end
             selectedName = item.Name
             highlight(b)
             if onSelect then
@@ -376,21 +379,25 @@ function Components.NavBar(theme, items, onSelect)
             highlight(b)
         end
     end
-    -- Private state (no attachment to attributes or instance fields to avoid errors)
-    local function selectInternal(name)
+
+    local api = {}
+    function api.Select(name)
         local b = buttons[name]
-        if b then
+        if b and name ~= selectedName then
             selectedName = name
             highlight(b)
+            if onSelect then
+                pcall(onSelect, selectedName)
+            end
         end
     end
-    function bar.Select(name)
-        selectInternal(name)
-    end
-    function bar.GetSelected()
+    function api.GetSelected()
         return selectedName
     end
-    return bar
+    function api.GetButton(name)
+        return buttons[name]
+    end
+    return bar, api
 end
 
 function Components.Modal(theme, props)
@@ -783,7 +790,8 @@ function Hub.mount(parent)
     end)
 
     -- Bottom NavBar
-    local nav = Components.NavBar(Themes.light, {
+    -- NavBar now returns (frame, api) to avoid attaching functions to Instances (some executors block this)
+    local nav, navApi = Components.NavBar(Themes.light, {
         {Name = "Home"},
         {Name = "Scripts"},
         {Name = "Settings"},
@@ -794,10 +802,11 @@ function Hub.mount(parent)
     nav.Position = UDim2.new(0.5,0,1,-10)
     nav.Parent = root
     Hub._instances.nav = nav
+    Hub._instances.navApi = navApi
 
     function Hub.selectNav(name)
-        if Hub._instances.nav and Hub._instances.nav.Select then
-            Hub._instances.nav:Select(name)
+        if Hub._instances.navApi and Hub._instances.navApi.Select then
+            Hub._instances.navApi.Select(name)
         end
     end
 
