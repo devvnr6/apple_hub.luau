@@ -5,7 +5,7 @@
   const yearEl = document.getElementById('year');
   if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
-  // HUD Canvas Animation - simple fast-moving lines + pulses
+  // HUD Canvas Animation - simple fast-moving lines + pulses (Blue)
   const canvas = document.getElementById('hud-canvas');
   if (canvas) {
     const ctx = canvas.getContext('2d');
@@ -36,7 +36,7 @@
       ctx.clearRect(0,0,width,height);
 
       // grid
-      ctx.strokeStyle = 'rgba(255,255,0,0.05)';
+      ctx.strokeStyle = 'rgba(0,170,255,0.06)';
       ctx.lineWidth = 1;
       for (let i = 0; i < width; i += 40) {
         ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, height); ctx.stroke();
@@ -46,7 +46,7 @@
       }
 
       // lines
-      ctx.strokeStyle = 'rgba(255,255,0,0.35)';
+      ctx.strokeStyle = 'rgba(0,170,255,0.35)';
       ctx.lineWidth = 2;
       lines.forEach(line => {
         line.y += line.speed / 800;
@@ -70,7 +70,7 @@
         const pr = p.r + Math.sin(p.t) * 6;
         ctx.beginPath();
         ctx.arc(px, py, pr, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(255,255,0,0.2)';
+        ctx.strokeStyle = 'rgba(0,170,255,0.25)';
         ctx.lineWidth = 1.5;
         ctx.stroke();
       });
@@ -109,19 +109,38 @@
   }
   if (logEl) {
     queue.forEach(item => setTimeout(() => append(item.msg), item.t));
+    // announce keys service
+    setTimeout(() => append('CHEAT KEYS :: <span class="ok">ONLINE</span> :: ISSUER v2.3'), 600);
+    setTimeout(() => append('REDEEM WINDOW :: <span class="ok">OPEN</span> :: TIER BASIC/PRO/GHOST'), 1200);
     setInterval(() => {
       const latency = (20 + Math.random()*30).toFixed(1);
       append(`HEARTBEAT :: LINK ${latency}ms`);
     }, 3000);
   }
 
-  // CTA focus ring sync with mouse for urgency
+  // Redeem form (client-side demo only)
+  const redeemForm = document.getElementById('redeem-form');
+  if (redeemForm) {
+    redeemForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const input = document.getElementById('redeem-key');
+      const key = (input && 'value' in input) ? String(input.value).trim() : '';
+      if (!key) return;
+      append(`REDEEM :: KEY ********${key.slice(-4)} :: VERIFYING...`);
+      setTimeout(() => {
+        append(`REDEEM :: KEY ********${key.slice(-4)} :: <span class="ok">UNLOCKED</span>`);
+        if (input) input.value = '';
+      }, 900);
+    });
+  }
+
+  // CTA focus ring sync with mouse for urgency (Blue)
   const cta = document.querySelector('[data-cta]');
   if (cta) {
     cta.addEventListener('mousemove', (e) => {
       const rect = cta.getBoundingClientRect();
       const x = e.clientX - rect.left; const y = e.clientY - rect.top;
-      cta.style.boxShadow = `0 0 0 1px #000, 0 8px 40px rgba(255,255,0,0.4), inset 0 0 0 9999px rgba(255,255,0,0.0)`;
+      cta.style.boxShadow = `0 0 0 1px #000, 0 8px 40px rgba(0,170,255,0.4), inset 0 0 0 9999px rgba(0,170,255,0.0)`;
       cta.style.transform = 'translateZ(0)';
     });
   }
