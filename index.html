@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BLUE LOCK // EXPLOITS - Premium Game Advantage</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-black: #0A0A0A;
+            --bg-dark-gray: #111111;
+            --electric-blue: #00FFFF;
+            --text-white: #FFFFFF;
+            --text-gray: #CCCCCC;
+            --card-bg: #141414;
+            --hover-blue: #00D4D4;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-black);
+            color: var(--text-gray);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Header/Navigation */
+        header {
+            background-color: var(--bg-black);
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+            padding: 1.5rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--electric-blue);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-gray);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--electric-blue);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--electric-blue);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .login-btn {
+            background-color: transparent;
+            color: var(--electric-blue);
+            border: 2px solid var(--electric-blue);
+            padding: 0.6rem 1.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            background-color: var(--electric-blue);
+            color: var(--bg-black);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+
+        /* Hero Section */
+        .hero {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 8rem 2rem;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 900;
+            color: var(--electric-blue);
+            margin-bottom: 1.5rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            text-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            }
+            to {
+                text-shadow: 0 0 40px rgba(0, 255, 255, 0.8);
+            }
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            color: var(--text-gray);
+            margin-bottom: 3rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-btn {
+            background-color: var(--electric-blue);
+            color: var(--bg-black);
+            border: none;
+            padding: 1.2rem 3rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 4px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.7);
+            background-color: var(--hover-blue);
+        }
+
+        /* Section Styling */
+        section {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 5rem 2rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--electric-blue);
+            margin-bottom: 3rem;
+            text-align: center;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* Product Catalog Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .product-card {
+            background-color: var(--card-bg);
+            border: 1px solid rgba(0, 255, 255, 0.15);
+            border-radius: 8px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--electric-blue), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .product-card:hover {
+            border-color: var(--electric-blue);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0, 255, 255, 0.2);
+        }
+
+        .product-card:hover::before {
+            opacity: 1;
+        }
+
+        .product-card h3 {
+            font-size: 1.5rem;
+            color: var(--text-white);
+            margin-bottom: 1rem;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background-color: rgba(0, 255, 255, 0.1);
+            color: var(--electric-blue);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            border: 1px solid var(--electric-blue);
+        }
+
+        .product-price {
+            font-size: 1.2rem;
+            color: var(--electric-blue);
+            font-weight: 700;
+            margin: 1rem 0;
+        }
+
+        .product-features {
+            list-style: none;
+            margin: 1rem 0;
+            color: var(--text-gray);
+        }
+
+        .product-features li {
+            padding: 0.3rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .product-features li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--electric-blue);
+        }
+
+        .details-btn {
+            background-color: transparent;
+            color: var(--electric-blue);
+            border: 2px solid var(--electric-blue);
+            padding: 0.7rem 1.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .details-btn:hover {
+            background-color: var(--electric-blue);
+            color: var(--bg-black);
+        }
+
+        /* Status Section */
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .status-item {
+            background-color: var(--card-bg);
+            border: 1px solid rgba(0, 255, 255, 0.15);
+            border-radius: 8px;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .status-item:hover {
+            border-color: var(--electric-blue);
+            box-shadow: 0 5px 20px rgba(0, 255, 255, 0.15);
+        }
+
+        .status-game {
+            font-size: 1.1rem;
+            color: var(--text-white);
+            font-weight: 600;
+        }
+
+        .status-indicator {
+            color: var(--electric-blue);
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-indicator::before {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background-color: var(--electric-blue);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--electric-blue);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        /* Benefits Section */
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .benefit-card {
+            background-color: var(--card-bg);
+            border: 1px solid rgba(0, 255, 255, 0.15);
+            border-radius: 8px;
+            padding: 2.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .benefit-card:hover {
+            border-color: var(--electric-blue);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0, 255, 255, 0.2);
+        }
+
+        .benefit-icon {
+            font-size: 3rem;
+            color: var(--electric-blue);
+            margin-bottom: 1.5rem;
+            filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.5));
+        }
+
+        .benefit-card h3 {
+            font-size: 1.3rem;
+            color: var(--electric-blue);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .benefit-card p {
+            color: var(--text-gray);
+            line-height: 1.8;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--bg-dark-gray);
+            border-top: 1px solid rgba(0, 255, 255, 0.2);
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-top: 5rem;
+        }
+
+        footer p {
+            color: var(--text-gray);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        /* Decorative Elements */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(0, 255, 255, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header/Navigation -->
+    <header>
+        <nav>
+            <div class="logo">BLUE LOCK // EXPLOITS</div>
+            <ul class="nav-links">
+                <li><a href="#products">Products (All Games)</a></li>
+                <li><a href="#status">Status</a></li>
+                <li><a href="#spoofer">Spoofer/Cleaner</a></li>
+                <li><a href="#pricing">Pricing/Access</a></li>
+                <li><button class="login-btn">LOGIN/REGISTER</button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>UNLEASH YOUR EGO. DOMINATE EVERY FIELD.</h1>
+        <p>Your premium source for undetected exploits across the world's most competitive titles.</p>
+        <button class="cta-btn">ACTIVATE ADVANTAGE</button>
+    </section>
+
+    <!-- Product Catalog -->
+    <section id="products">
+        <h2 class="section-title">HIGH-GRADE STRATEGIC EXPLOITS</h2>
+        <div class="products-grid">
+            <div class="product-card">
+                <h3>VALORANT</h3>
+                <span class="status-badge">STATUS: UNDETECTED</span>
+                <div class="product-price">$89.99/month</div>
+                <ul class="product-features">
+                    <li>Advanced ESP & Wallhack</li>
+                    <li>Silent Aimbot</li>
+                    <li>No Recoil & Spread</li>
+                    <li>Radar System</li>
+                </ul>
+                <button class="details-btn">VIEW DETAILS</button>
+            </div>
+
+            <div class="product-card">
+                <h3>WARZONE</h3>
+                <span class="status-badge">STATUS: UNDETECTED</span>
+                <div class="product-price">$79.99/month</div>
+                <ul class="product-features">
+                    <li>Precision Targeting</li>
+                    <li>Loot ESP</li>
+                    <li>Vehicle Radar</li>
+                    <li>Magic Bullet</li>
+                </ul>
+                <button class="details-btn">VIEW DETAILS</button>
+            </div>
+
+            <div class="product-card">
+                <h3>ARK: SURVIVAL EVOLVED</h3>
+                <span class="status-badge">STATUS: UNDETECTED</span>
+                <div class="product-price">$59.99/month</div>
+                <ul class="product-features">
+                    <li>Player & Dino ESP</li>
+                    <li>Resource Locator</li>
+                    <li>Speed Modifier</li>
+                    <li>Infinite Stamina</li>
+                </ul>
+                <button class="details-btn">VIEW DETAILS</button>
+            </div>
+
+            <div class="product-card">
+                <h3>APEX LEGENDS</h3>
+                <span class="status-badge">STATUS: UNDETECTED</span>
+                <div class="product-price">$84.99/month</div>
+                <ul class="product-features">
+                    <li>Smooth Aimbot</li>
+                    <li>Advanced ESP</li>
+                    <li>No Recoil Control</li>
+                    <li>Item ESP & Tracking</li>
+                </ul>
+                <button class="details-btn">VIEW DETAILS</button>
+            </div>
+
+            <div class="product-card">
+                <h3>RUST</h3>
+                <span class="status-badge">STATUS: UNDETECTED</span>
+                <div class="product-price">$69.99/month</div>
+                <ul class="product-features">
+                    <li>Player ESP & Distance</li>
+                    <li>Loot & Storage ESP</li>
+                    <li>Raid Helper</li>
+                    <li>Silent Melee</li>
+                </ul>
+                <button class="details-btn">VIEW DETAILS</button>
+            </div>
+
+            <div class="product-card">
+                <h3>ESCAPE FROM TARKOV</h3>
+                <span class="status-badge">STATUS: UNDETECTED</span>
+                <div class="product-price">$99.99/month</div>
+                <ul class="product-features">
+                    <li>Loot Value Scanner</li>
+                    <li>Player Tracking</li>
+                    <li>Thermal Vision</li>
+                    <li>No Inertia</li>
+                </ul>
+                <button class="details-btn">VIEW DETAILS</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Status Section -->
+    <section id="status">
+        <h2 class="section-title">REAL-TIME STATUS REPORT</h2>
+        <div class="status-grid">
+            <div class="status-item">
+                <div class="status-game">VALORANT</div>
+                <div class="status-indicator">ONLINE</div>
+            </div>
+            <div class="status-item">
+                <div class="status-game">WARZONE</div>
+                <div class="status-indicator">ACTIVE</div>
+            </div>
+            <div class="status-item">
+                <div class="status-game">ARK: SURVIVAL EVOLVED</div>
+                <div class="status-indicator">UP TO DATE</div>
+            </div>
+            <div class="status-item">
+                <div class="status-game">APEX LEGENDS</div>
+                <div class="status-indicator">ONLINE</div>
+            </div>
+            <div class="status-item">
+                <div class="status-game">RUST</div>
+                <div class="status-indicator">ACTIVE</div>
+            </div>
+            <div class="status-item">
+                <div class="status-game">ESCAPE FROM TARKOV</div>
+                <div class="status-indicator">ONLINE</div>
+            </div>
+            <div class="status-item">
+                <div class="status-game">COUNTER-STRIKE 2</div>
+                <div class="status-indicator">ACTIVE</div>
+            </div>
+            <div class="status-item">
+                <div class="status-game">FORTNITE</div>
+                <div class="status-indicator">UP TO DATE</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section id="pricing">
+        <h2 class="section-title">THE EGOIST'S ADVANTAGE</h2>
+        <div class="benefits-grid">
+            <div class="benefit-card">
+                <div class="benefit-icon">🛡️</div>
+                <h3>UNDETECTED SECURITY</h3>
+                <p>Military-grade encryption and kernel-level obfuscation ensures your competitive edge remains invisible to all anti-cheat systems.</p>
+            </div>
+
+            <div class="benefit-card">
+                <div class="benefit-icon">📡</div>
+                <h3>24/7 DATA FEED</h3>
+                <p>Real-time updates pushed automatically. Our servers monitor game patches and deploy counter-measures within minutes of detection.</p>
+            </div>
+
+            <div class="benefit-card">
+                <div class="benefit-icon">⚡</div>
+                <h3>INSTANT DEPLOYMENT</h3>
+                <p>One-click injection system. No complex setup, no technical knowledge required. Activate your advantage in seconds.</p>
+            </div>
+
+            <div class="benefit-card">
+                <div class="benefit-icon">🔒</div>
+                <h3>HWID PROTECTION</h3>
+                <p>Advanced spoofer included. Protect your hardware identity and maintain plausible deniability across all platforms.</p>
+            </div>
+
+            <div class="benefit-card">
+                <div class="benefit-icon">💎</div>
+                <h3>ELITE COMMUNITY</h3>
+                <p>Private Discord server with 10,000+ verified users. Share strategies, receive exclusive updates, and connect with top players.</p>
+            </div>
+
+            <div class="benefit-card">
+                <div class="benefit-icon">🎯</div>
+                <h3>PRECISION ENGINEERING</h3>
+                <p>Each exploit is hand-crafted by veteran reverse engineers. We don't mass-produce—we architect perfection.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 BLUE LOCK // EXPLOITS. All rights reserved. For educational purposes only.</p>
+        <p style="margin-top: 1rem; color: var(--electric-blue);">TERMS • PRIVACY • SUPPORT • STATUS</p>
+    </footer>
+</body>
+</html>
